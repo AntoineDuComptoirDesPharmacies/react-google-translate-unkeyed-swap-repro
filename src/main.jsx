@@ -1,6 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { IntlProvider } from 'react-intl';
 import { Carousel } from './Carousel.jsx';
+import { LateAlert } from './LateAlert.jsx';
+import { CompactMessage } from './CompactMessage.jsx';
 
 // What Chrome's page translation does to the DOM: every text node is
 // replaced by <font><font>translated</font></font>. React still holds the
@@ -32,7 +35,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) {
       return (
-        <pre id="error" style={{ color: 'crimson' }}>
+        <pre className="error" style={{ color: 'crimson', whiteSpace: 'pre-wrap' }}>
           {String(this.state.error)}
         </pre>
       );
@@ -41,32 +44,69 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+function Case({ id, title, steps, children }) {
+  return (
+    <article id={id} style={{ border: '1px solid #ccc', padding: 16, marginBottom: 16 }}>
+      <h2>{title}</h2>
+      <ol>
+        {steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+      <button
+        type="button"
+        className="simulate"
+        onClick={() => simulateGoogleTranslate(document.querySelector(`#${id} .target`))}
+      >
+        simulate Google Translate
+      </button>
+      <div className="target">
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
+    </article>
+  );
+}
+
 function App() {
   return (
-    <main>
-      <h1>eslint-plugin-react-google-translate: unkeyed swap repro</h1>
-      <ol>
-        <li>
-          Either translate this page with Chrome, or click{' '}
-          <button
-            type="button"
-            id="simulate"
-            onClick={() => simulateGoogleTranslate(document.getElementById('carousel'))}
-          >
-            simulate Google Translate
-          </button>
-        </li>
-        <li>
-          Click <strong>next</strong> in the carousel: React throws
-          NotFoundError insertBefore.
-        </li>
-      </ol>
-      <div id="carousel">
-        <ErrorBoundary>
+    <IntlProvider locale="en" defaultLocale="en">
+      <main>
+        <h1>eslint-plugin-react-google-translate: three uncovered patterns</h1>
+        <p>
+          <code>npm run lint</code> reports nothing on any of the three cases.
+          Each one can also be reproduced by translating this page with Chrome
+          instead of clicking "simulate".
+        </p>
+
+        <Case
+          id="swap"
+          title="1. Same-type elements with differently laid out text children, no key (src/Carousel.jsx)"
+          steps={['simulate Google Translate', 'click "next"']}
+        >
           <Carousel />
-        </ErrorBoundary>
-      </div>
-    </main>
+        </Case>
+
+        <Case
+          id="component"
+          title="2. A component rendered before a text node (src/LateAlert.jsx)"
+          steps={['simulate Google Translate', 'click "mount the alert"']}
+        >
+          <LateAlert />
+        </Case>
+
+        <Case
+          id="intl"
+          title="3. A component that renders a bare text node: react-intl <FormattedMessage /> (src/CompactMessage.jsx)"
+          steps={[
+            'click "toggle compact" (on)',
+            'simulate Google Translate',
+            'click "toggle compact" again (off)',
+          ]}
+        >
+          <CompactMessage />
+        </Case>
+      </main>
+    </IntlProvider>
   );
 }
 
