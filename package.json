@@ -1,0 +1,25 @@
+{
+  "name": "react-google-translate-unkeyed-swap-repro",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src --ext .jsx,.js",
+    "test": "node test/crash.test.mjs"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "8.59.0",
+    "@vitejs/plugin-react": "4.3.4",
+    "eslint": "8.57.1",
+    "eslint-plugin-react-google-translate": "1.1.0",
+    "playwright": "^1.63.0",
+    "typescript": "5.9.3",
+    "vite": "5.4.11"
+  }
+}
