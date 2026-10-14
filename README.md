@@ -3,6 +3,9 @@
 Three pages that are clean under both rules of `eslint-plugin-react-google-translate`
 (1.1.0, type information enabled) and still crash under Google Translate.
 
+- Live (static build): https://antoineducomptoirdespharmacies.github.io/react-google-translate-unkeyed-swap-repro/
+- In the browser with lint and dev server: https://stackblitz.com/github/AntoineDuComptoirDesPharmacies/react-google-translate-unkeyed-swap-repro
+
 ```sh
 npm install
 npm run lint   # 0 problems on src/*.jsx
